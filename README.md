@@ -2,7 +2,7 @@
 
 AI-powered commit message generator for VS Code using Qwen CLI.
 
-![screenshot](static/ss_qwen_commit.png)
+![screenshot](https://raw.githubusercontent.com/darqus/qwen-commit-pub/refs/heads/main/static/ss_qwen_commit.png)
 
 ## Features
 

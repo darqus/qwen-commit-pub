@@ -2,7 +2,7 @@
   "name": "qwen-commit",
   "displayName": "Qwen Commit",
   "description": "AI-powered commit message generator using Qwen CLI with Conventional Commits support",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "publisher": "lod-inc",
   "icon": "icons/logo.png",
   "keywords": [
