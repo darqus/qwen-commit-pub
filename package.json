@@ -2,7 +2,7 @@
   "name": "qwen-commit",
   "displayName": "Qwen Commit",
   "description": "AI-powered commit message generator using Qwen CLI with Conventional Commits support",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "publisher": "lod-inc",
   "icon": "icons/logo.png",
   "keywords": [
@@ -19,7 +19,7 @@
   },
   "screenshots": [
     {
-      "path": "static/ss_qwen_commit.png",
+      "path": "https://raw.githubusercontent.com/darqus/qwen-commit-pub/main/static/ss_qwen_commit.png",
       "caption": "Qwen Commit - AI-powered commit message generator"
     }
   ],
