@@ -1,0 +1,65 @@
+{
+  "name": "qwen-commit",
+  "displayName": "Qwen Commit",
+  "description": "AI-powered commit message generator using Qwen CLI with Conventional Commits support",
+  "version": "0.2.0",
+  "publisher": "lod-inc",
+  "icon": "icons/logo.png",
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "qwen",
+    "conventional commits",
+    "scm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darqus/qwen-commit"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "qwen-commit.generateCommitMessage",
+        "title": "Qwen: Generate Commit Message",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "qwen-commit.stopGeneration",
+        "title": "Qwen: Stop Generation",
+        "icon": "$(stop)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "qwen-commit.generateCommitMessage",
+          "when": "scmProvider == git && !qwen-commit.isGenerating",
+          "group": "navigation@1"
+        },
+        {
+          "command": "qwen-commit.stopGeneration",
+          "when": "qwen-commit.isGenerating",
+          "group": "navigation@1"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.7.1"
+  }
+}
