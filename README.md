@@ -90,8 +90,8 @@ npm run build-and-install
 # or
 yarn build-and-install
 
-# Or manually install the VSIX
-code --install-extension qwen-commit-0.0.1.vsix
+# Or manually install the VSIX (version will be substituted automatically)
+code --install-extension qwen-commit-$(node -p "require('./package.json').version").vsix
 ```
 
 ### Update Dependencies
