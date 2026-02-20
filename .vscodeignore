@@ -3,8 +3,10 @@
 .gitignore
 .yarn/**
 **/*.map
-**/prompt.log
+**/*.ts
+**/tsconfig.json
+**/CHANGELOG.md
 **/scripts/**
 **/src/**
 **/static/**
-**/icons/**
+**/*.vsix
