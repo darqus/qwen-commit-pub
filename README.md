@@ -4,6 +4,8 @@ AI-powered commit message generator for VS Code using Qwen CLI.
 
 ![screenshot](https://raw.githubusercontent.com/darqus/qwen-commit-pub/refs/heads/main/static/ss_qwen_commit.png)
 
+<video src="https://raw.githubusercontent.com/darqus/assets/527dfb8f6eb4de43ed235f2e11534a511115b757/video/qwen-commit.mp4" controls></video>
+
 ## Features
 
 - 🤖 **AI-Generated Commit Messages** - Automatically generates commit messages based on your code changes using Qwen AI
