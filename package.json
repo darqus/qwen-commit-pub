@@ -65,7 +65,7 @@
   "scripts": {
     "package": "vsce package --no-dependencies",
     "build": "npm run package",
-    "release": "npx ts-node scripts/release.ts"
+    "release": "node scripts/release.js"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.7.1"

@@ -1,17 +1,12 @@
-import { execSync } from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const readline = require('readline');
 
 const PUB_DIR = path.resolve(__dirname, '..');
 const PACKAGE_JSON_PATH = path.join(PUB_DIR, 'package.json');
 
-interface PackageJson {
-  version: string;
-  name: string;
-  [key: string]: unknown;
-}
-
-function exec(command: string, options: { silent?: boolean } = {}): string {
+function exec(command, options = {}) {
   try {
     return execSync(command, {
       cwd: PUB_DIR,
@@ -26,7 +21,7 @@ function exec(command: string, options: { silent?: boolean } = {}): string {
   }
 }
 
-function execInDir(dir: string, command: string): void {
+function execInDir(dir, command) {
   execSync(command, {
     cwd: dir,
     encoding: 'utf8',
@@ -34,21 +29,20 @@ function execInDir(dir: string, command: string): void {
   });
 }
 
-function readPackageJson(): PackageJson {
+function readPackageJson() {
   const content = fs.readFileSync(PACKAGE_JSON_PATH, 'utf8');
   return JSON.parse(content);
 }
 
-function writePackageJson(packageJson: PackageJson): void {
+function writePackageJson(packageJson) {
   fs.writeFileSync(PACKAGE_JSON_PATH, JSON.stringify(packageJson, null, 2) + '\n');
 }
 
-function getLastReleaseCommit(): string {
+function getLastReleaseCommit() {
   try {
-    // Ищем последний коммит с сообщением "chore: release v..."
     const commit = execSync('git log --oneline --grep="^chore: release v" -n 1 --pretty=format:"%H" 2>/dev/null', {
       encoding: 'utf8',
-      cwd: ROOT_DIR
+      cwd: PUB_DIR
     }).trim();
     return commit;
   } catch {
@@ -56,21 +50,20 @@ function getLastReleaseCommit(): string {
   }
 }
 
-function getLastTag(): string {
+function getLastTag() {
   try {
     return execSync('git describe --tags --abbrev=0 2>/dev/null', {
       encoding: 'utf8',
-      cwd: ROOT_DIR
+      cwd: PUB_DIR
     }).trim();
   } catch {
-    // Если тегов нет, возвращаем пустую строку
     return '';
   }
 }
 
-function getCommitsSinceLastRelease(): string[] {
+function getCommitsSinceLastRelease() {
   const lastReleaseCommit = getLastReleaseCommit();
-  let commits: string;
+  let commits;
 
   if (lastReleaseCommit) {
     commits = execSync(`git log ${lastReleaseCommit}..HEAD --pretty=format:"%s"`, {
@@ -87,28 +80,25 @@ function getCommitsSinceLastRelease(): string[] {
   return commits.split('\n').filter(Boolean);
 }
 
-function determineVersionType(commits: string[]): 'major' | 'minor' | 'patch' {
+function determineVersionType(commits) {
   for (const commit of commits) {
-    // Проверяем на breaking changes
     if (commit.includes('BREAKING') || commit.includes('!:')) {
       return 'major';
     }
   }
-  
-  // Проверяем на наличие feat
+
   for (const commit of commits) {
     if (commit.startsWith('feat') || commit.startsWith('feat(')) {
       return 'minor';
     }
   }
-  
-  // По умолчанию patch
+
   return 'patch';
 }
 
-function incrementVersion(version: string, type: 'major' | 'minor' | 'patch'): string {
+function incrementVersion(version, type) {
   const parts = version.split('.').map(Number);
-  
+
   switch (type) {
     case 'major':
       parts[0]++;
@@ -123,11 +113,11 @@ function incrementVersion(version: string, type: 'major' | 'minor' | 'patch'): s
       parts[2]++;
       break;
   }
-  
+
   return parts.join('.');
 }
 
-function checkWorkingDirectoryClean(): boolean {
+function checkWorkingDirectoryClean() {
   const status = execSync('git status --porcelain', {
     encoding: 'utf8',
     cwd: PUB_DIR
@@ -136,28 +126,28 @@ function checkWorkingDirectoryClean(): boolean {
   return status.length === 0;
 }
 
-function getCurrentBranch(): string {
+function getCurrentBranch() {
   return execSync('git rev-parse --abbrev-ref HEAD', {
     encoding: 'utf8',
     cwd: PUB_DIR
   }).trim();
 }
 
-async function confirm(message: string): Promise<boolean> {
-  const readline = require('readline').createInterface({
+function confirm(message) {
+  const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
-  
+
   return new Promise((resolve) => {
-    readline.question(`${message} (y/n): `, (answer: string) => {
-      readline.close();
+    rl.question(`${message} (y/n): `, (answer) => {
+      rl.close();
       resolve(answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes');
     });
   });
 }
 
-async function release(): Promise<void> {
+async function release() {
   console.log('=== 🚀 Релиз новой версии ===\n');
 
   // 1. Проверка чистоты working directory
@@ -273,7 +263,6 @@ async function release(): Promise<void> {
 
   if (releaseConfirmed) {
     try {
-      // Находим .vsix файл
       const files = fs.readdirSync(PUB_DIR).filter(f => f.endsWith('.vsix'));
       if (files.length > 0) {
         const vsixFile = path.join(PUB_DIR, files[0]);
