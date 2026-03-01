@@ -1,0 +1,92 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Compile TypeScript
+        run: npm run compile
+      
+      - name: Build extension
+        run: npm run build
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build public version (build:pub:auto)
+        run: npm run build:pub:auto
+        env:
+          CI: true
+      
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qwen-commit-vsix
+          path: ../qwen-commit-pub/*.vsix
+          retention-days: 30
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: qwen-commit-vsix
+          path: ./artifacts
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/*.vsix
+          generate_release_notes: true
+          fail_on_unmatched_files: false
+      
+      # Опционально: публикация в VS Code Marketplace
+      # Раскомментируйте для автоматической публикации
+      # - name: Publish to VS Code Marketplace
+      #   uses: HaaLeo/publish-vscode-extension@v1
+      #   with:
+      #     pat: ${{ secrets.VSCE_PAT }}
+      #     extensionFile: ./artifacts/*.vsix
+      
+      # Опционально: публикация в Open VSX Registry
+      # - name: Publish to Open VSX
+      #   uses: HaaLeo/publish-vscode-extension@v1
+      #   with:
+      #     pat: ${{ secrets.OPEN_VSX_PAT }}
+      #     extensionFile: ./artifacts/*.vsix
+      #     registryUrl: https://open-vsx.org
