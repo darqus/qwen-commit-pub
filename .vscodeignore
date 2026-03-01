@@ -1,4 +1,5 @@
 .vscode/**
+.github/**
 .vsixmanifest
 .gitignore
 .yarn/**
