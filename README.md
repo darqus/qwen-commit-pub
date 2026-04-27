@@ -2,6 +2,10 @@
 
 AI-powered commit message generator for VS Code using Qwen CLI.
 
+> ⚠️ **This project is no longer maintained.** The original Opencode provider changed its pricing plans and discontinued the free tier.
+
+**An equivalent extension is now available using the open provider Opencode at https://github.com/darqus/open-commit-pub**
+
 ![screenshot](https://raw.githubusercontent.com/darqus/qwen-commit-pub/refs/heads/main/static/ss_qwen_commit.png)
 
 <video src="https://raw.githubusercontent.com/darqus/assets/527dfb8f6eb4de43ed235f2e11534a511115b757/video/qwen-commit.mp4" controls></video>
